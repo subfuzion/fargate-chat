@@ -176,17 +176,18 @@ Resources:
       Priority: !Ref 'Priority'
 
   # Create Route53 entry for Loadbalancer when we launch the application
-  myDNSRecord:
-    Type: "AWS::Route53::RecordSet"
-    Properties: 
-      Comment: "nice name for ALB"
-      HostedZoneId: "ZZ7SDHQ637FI3"
-      Name: !Join ['.', [!Ref 'ServiceName', 'digilution.io']]
-      ResourceRecords:
-        - Fn::ImportValue:
-            !Join [':', [!Ref 'EnvironmentName', 'DNSName']]
-      TTL: 300
-      Type: CNAME
+  # Unhash and change the zone and TLD
+  #myDNSRecord:
+  #  Type: "AWS::Route53::RecordSet"
+  #  Properties: 
+  #    Comment: "nice name for ALB"
+  #    HostedZoneId: "ZZ7SDHQ637FI3"
+  #    Name: !Join ['.', [!Ref 'ServiceName', 'digilution.io']]
+  #    ResourceRecords:
+  #      - Fn::ImportValue:
+  #          !Join [':', [!Ref 'EnvironmentName', 'DNSName']]
+  #    TTL: 300
+  #    Type: CNAME
 
   # Enable autoscaling for this service
   ScalableTarget:
