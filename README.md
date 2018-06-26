@@ -36,7 +36,7 @@ Products used:
 
 ##### High level ovewrview diagram
 
-![High level Diagram](./img/chatservice.png)
+![High level Diagram](./img/chat-app.png)
 
 ## Exercise
 
