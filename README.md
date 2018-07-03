@@ -85,7 +85,7 @@ Now set the inital options for the service:
 Choose:
 
 - **Launch Type**: Fargate
-- **Number of Tasks 1**: 1
+- **Number of Tasks**: 1
 
 The rest can remain default. The next section you'll be ask about is networking:
 
