@@ -34,7 +34,7 @@ Products used:
 - Amazon CloudFormation
 - AWS Application Discovery Service
 
-##### High level ovewrview diagram
+##### High level overview diagram
 
 ![High level Diagram](./img/chat-app.png)
 
