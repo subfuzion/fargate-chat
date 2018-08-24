@@ -34,7 +34,7 @@ Products used:
 - Amazon CloudFormation
 - AWS Application Discovery Service
 
-##### High level ovewrview diagram
+##### High level overview diagram
 
 ![High level Diagram](./img/chat-app.png)
 
@@ -44,19 +44,19 @@ Products used:
 
 ##### Build the VPC
 
-First we are going to need a VPC into which we'll deploy our Fargate Cluster. We are going to use cloudformation and deploy three public subnets and three private subnets, our fargate cluster will be in the private subnet and we'll use load balancers to make this publically accessible.
+First we are going to need a VPC into which we'll deploy our Fargate Cluster. We are going to use cloudformation and deploy three public subnets and three private subnets, our fargate cluster will be in the private subnet and we'll use load balancers to make this publicly accessible.
 
 In this git repository there is a folder called cloudformation. This contains our files for building our VPC.
 
 Open the AWS console in your browser and go to cloudformation. Press Create Stack.
 
-![New Stack](./img/newstack.png) 
+![New Stack](./img/newstack.png)
 
 Select upload template to S3 and find the file named **_public-private-vpc.yml_**
 
 ![Template](./img/template.png)
 
-Answer a few questions such as stack name and set your Environment variable. This varibale needs to be the same in the next two templates. In the demo that goes witht his I use **_dev_** as the environment name and we need to use the same name in all other stacks.
+Answer a few questions such as stack name and set your Environment variable. This variable needs to be the same in the next two templates. In the demo that goes with this I use **_dev_** as the environment name and we need to use the same name in all other stacks.
 
 Wait for this to complete in the console.
 
@@ -94,15 +94,15 @@ The rest can remain default. The next section you'll be ask about is networking:
 Make sure you select the following options:
 
 - **Cluster VPC**: dev-vpc (subnet should be 10.0.0.0/16)
-- **Subnets**: 10.0.3.0/24, 10.0.4.0/24, 10.0.5.0/24 
+- **Subnets**: 10.0.3.0/24, 10.0.4.0/24, 10.0.5.0/24
 
 and next we need to edit the security group:
 
 ![security group](./img/security-service.png)
 
-Change the type from **_HTTP_** to **_custom TCP_** and set the port to 6379. In this demo I've allowed access from everywhere for ease and speed but in a real deployment you'd lock this down, luckily its in the provate subnet so none routable from the internet.
+Change the type from **_HTTP_** to **_custom TCP_** and set the port to 6379. In this demo I've allowed access from everywhere for ease and speed but in a real deployment you'd lock this down, luckily its in the private subnet so none routable from the internet.
 
-Set: 
+Set:
 
 - **_Auto-assign public IP_**: disabled
 
@@ -118,7 +118,7 @@ The only change you need to make is to drop the TTL for the A record to at most 
 
 Click Next, next, create service.
 
-Now the service is created, you can check out the status of the running container in the ECS console. Its also work noting if you look in EC2 you wont see any running instances. To check out the DNS do this by going to Route 53 and looking for the **_local_** zone. In here you should see the record **_redis-master.local._** which you'll see has a provate IP in one of the ranges 10.0.{3-5}.0/24
+Now the service is created, you can check out the status of the running container in the ECS console. Its also work noting if you look in EC2 you wont see any running instances. To check out the DNS do this by going to Route 53 and looking for the **_local_** zone. In here you should see the record **_redis-master.local._** which you'll see has a private IP in one of the ranges 10.0.{3-5}.0/24
 
 ### Create the chat application
 
@@ -137,11 +137,11 @@ Load your favourite web browser and find the FQDN for the public ALB created. Th
 
 ### Summary
 
-In summary, you've now sucessfully built a Fargate cluster, loaded a task definition and built a service by hand. For that service you've also enabled service discovery so our chat service can use the redis instance. Plus you've done all this without spinning up and configuring any servers!
+In summary, you've now successfully built a Fargate cluster, loaded a task definition and built a service by hand. For that service you've also enabled service discovery so our chat service can use the redis instance. Plus you've done all this without spinning up and configuring any servers!
 
 ### Clean up
 
-Most of this can be deleted by deleting the stack in the cloudformation console. However you'll need to manually pull down the service discovery componant as we built this by hand.
+Most of this can be deleted by deleting the stack in the cloudformation console. However you'll need to manually pull down the service discovery component as we built this by hand.
 
 First lets delete the service from in the ECS console. Find ther redis master service in your cluster and select it then hit delete:
 
@@ -193,4 +193,4 @@ $ aws servicediscovery delete-namespace --id ns-orjxhzxsj7yk7ocm
 
 Some ideas:
 
-If you want to take this to the next level, try creating a clusted redis service or making the chat front end autoscale. Another good thing to experiment with is adding IAM roles to your tasks.
+If you want to take this to the next level, try creating a clustered redis service or making the chat front end autoscale. Another good thing to experiment with is adding IAM roles to your tasks.
