@@ -1,4 +1,3 @@
-![Builders Lab](./img/builderslab.png)
 ## Practical Fargate
 Twitter: [@ric__harvey](https://twitter.com/ric__harvey)
 ### Take aways
@@ -148,8 +147,6 @@ First lets delete the service from in the ECS console. Find ther redis lead serv
 ![find the service](./img/delete-service.png)
 
 Now you can confirm deletion by typing **_delete me_**
-
-![delete the service](./img/confirm-delete.png)
 
 Lets now use the aws CLI to clean up the service discovery elements. Let's find the service and namespace we need to clean up.
 
