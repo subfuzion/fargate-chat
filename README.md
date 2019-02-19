@@ -70,11 +70,11 @@ Remember our environment in this is called dev so update that variable as you go
 
 ![Stacks](./img/stacks.png)
 
-### Create the Redis master and service definition
+### Create the Redis lead and service definition
 
-Lets now create a redis container in our fargate cluster. Open the cloudformation console and load the **_redis-master.yml_** template.
+Lets now create a redis container in our fargate cluster. Open the cloudformation console and load the **_redis-lead.yml_** template.
 
-Take a look in the ECS console and under Task Definitions you should now see defined a new task called redis-master. Check the tick box and under actions choose **_Create Service_**.
+Take a look in the ECS console and under Task Definitions you should now see defined a new task called redis-lead. Check the tick box and under actions choose **_Create Service_**.
 
 ![Create Stack](./img/create-service.png)
 
@@ -106,7 +106,7 @@ Set:
 
 - **_Auto-assign public IP_**: disabled
 
-Now for some service discovery so our chat application can locate the redis master, via a DNS name rather than hardcoding an IP.
+Now for some service discovery so our chat application can locate the redis lead, via a DNS name rather than hardcoding an IP.
 
 ![service discovery](./img/discovery-service.png)
 
@@ -118,7 +118,7 @@ The only change you need to make is to drop the TTL for the A record to at most 
 
 Click Next, next, create service.
 
-Now the service is created, you can check out the status of the running container in the ECS console. Its also work noting if you look in EC2 you wont see any running instances. To check out the DNS do this by going to Route 53 and looking for the **_local_** zone. In here you should see the record **_redis-master.local._** which you'll see has a private IP in one of the ranges 10.0.{3-5}.0/24
+Now the service is created, you can check out the status of the running container in the ECS console. Its also work noting if you look in EC2 you wont see any running instances. To check out the DNS do this by going to Route 53 and looking for the **_local_** zone. In here you should see the record **_redis-lead.local._** which you'll see has a private IP in one of the ranges 10.0.{3-5}.0/24
 
 ### Create the chat application
 
@@ -143,7 +143,7 @@ In summary, you've now successfully built a Fargate cluster, loaded a task defin
 
 Most of this can be deleted by deleting the stack in the cloudformation console. However you'll need to manually pull down the service discovery component as we built this by hand.
 
-First lets delete the service from in the ECS console. Find ther redis master service in your cluster and select it then hit delete:
+First lets delete the service from in the ECS console. Find ther redis lead service in your cluster and select it then hit delete:
 
 ![find the service](./img/delete-service.png)
 
@@ -176,7 +176,7 @@ $ aws servicediscovery list-services
         {
             "Id": "srv-a66t7vfsvb37jnhi",
             "Arn": "arn:aws:servicediscovery:eu-west-1:210944566071:service/srv-a66t7vfsvb37jnhi",
-            "Name": "redis-master"
+            "Name": "redis-lead"
         }
     ]
 }

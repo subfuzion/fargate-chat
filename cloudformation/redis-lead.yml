@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: Redis Master
+Description: Redis Lead
 Parameters:
   EnvironmentName:
     Type: String
@@ -8,7 +8,7 @@ Parameters:
                  Used to locate other resources in the same environment.
   ServiceName:
     Type: String
-    Default: redis-master
+    Default: redis-lead
 
   ImageUrl:
     Type: String

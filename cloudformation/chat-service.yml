@@ -21,7 +21,7 @@ Parameters:
     Description: What port number the application inside the docker container is binding too
   RedisEndpoint:
     Type: String
-    Default: 'redis-master.local'
+    Default: 'redis-lead.local'
   ContainerCpu:
     Type: Number
     Default: 1024
@@ -177,17 +177,17 @@ Resources:
 
   # Create Route53 entry for Loadbalancer when we launch the application
   # Unhash and change the zone and TLD
-  #myDNSRecord:
-  #  Type: "AWS::Route53::RecordSet"
-  #  Properties: 
-  #    Comment: "nice name for ALB"
-  #    HostedZoneId: "ZZ7SDHQ637FI3"
-  #    Name: !Join ['.', [!Ref 'ServiceName', 'digilution.io']]
-  #    ResourceRecords:
-  #      - Fn::ImportValue:
-  #          !Join [':', [!Ref 'EnvironmentName', 'DNSName']]
-  #    TTL: 30
-  #    Type: CNAME
+  myDNSRecord:
+    Type: "AWS::Route53::RecordSet"
+    Properties: 
+      Comment: "nice name for ALB"
+      HostedZoneId: "ZZ7SDHQ637FI3"
+      Name: !Join ['.', [!Ref 'ServiceName', 'digilution.io']]
+      ResourceRecords:
+        - Fn::ImportValue:
+            !Join [':', [!Ref 'EnvironmentName', 'DNSName']]
+      TTL: 30
+      Type: CNAME
 
   # Enable autoscaling for this service
   ScalableTarget:
