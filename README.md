@@ -99,7 +99,7 @@ and next we need to edit the security group:
 
 ![security group](./img/security-service.png)
 
-Change the type from **_HTTP_** to **_custom TCP_** and set the port to 6379. In this demo I've allowed access from everywhere for ease and speed but in a real deployment you'd lock this down, luckily its in the private subnet so none routable from the internet.
+Change the type from **_HTTP_** to **_custom TCP_** and set the port to 6379. I'm now going to lock redis down so only hosts in my network can access it by setting the source to 10.0.0.0/16. I recommend that if you do this in production you can go even further and create tighter security group rules.
 
 Set:
 
