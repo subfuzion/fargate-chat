@@ -1,17 +1,13 @@
 # Socket.IO Chat
 
-A simple chat demo for socket.io
+A simple chat demo for socket.io with a redis backend
 
-## How to use
+## How to build
 
 ```
-$ npm install
-$ npm start
+$ docker build -t <username>/fargate-chat-demo:latest .
 ```
-
-And point your browser to `http://localhost:3000`. Optionally, specify
-a port by supplying the `PORT` env variable.
 
 ## Deploy on AWS
 
-Check out the accompaying article on how to deploy this on AWS.
+See the main README and change the image path to your own repo.
