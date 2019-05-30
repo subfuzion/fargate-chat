@@ -1,10 +1,13 @@
-## Practical Fargate
-Twitter: [@ric__harvey](https://twitter.com/ric__harvey)
-### Take aways
+## Fargate Chat Demo
 
-By the end of this lab session you'll have seen built a full VPC and an AWS Fargate cluster. Into this cluster you'll learn how to deploy a container service whilst using service discovery.
+This fork is based on work by Ric Harvey.  
+Twitter: [@ric__harvey](https://twitter.com/ric__harvey)  
+Repo: https://gitlab.com/ric_harvey/bl_practical_fargate.git
+
+This is a working sample that deploys a simple chat application using AWS Fargate. The sample includes creating a VPC and Fargate cluster, using service discovery, and deploying containerized services to the cluster. VPC and an AWS Fargate cluster. Into this cluster you'll learn how to deploy a container service whilst using service discovery. 
 
 ### What is Fargate
+
 URL: [https://aws.amazon.com/fargate/](https://aws.amazon.com/fargate/)
 
 AWS Fargate is a technology for Amazon ECS that allows you to run containers without having to manage servers or clusters. With AWS Fargate, you no longer have to provision, configure, and scale clusters of virtual machines to run containers. This removes the need to choose server types, decide when to scale your clusters, or optimize cluster packing. AWS Fargate removes the need for you to interact with or think about servers or clusters. Fargate lets you focus on designing and building your applications instead of managing the infrastructure that runs them.
@@ -25,7 +28,7 @@ You should be able to deploy this in 30-45 mins
 
 ### Solution overview
 
-We are going to use the AWS technologies listed below to build a simple chat application that uses redis to pass messages between the frontends. When we build the components we'll use cloudformation however when we deploy the redis solution we'll build the "service" definition by hand in order to highlight how you can utilise the service discovery.
+We are going to use the AWS technologies listed below to build a simple chat application that uses redis to pass messages between the frontends. When we build the components we'll use CloudFormation however when we deploy the redis solution we'll build the "service" definition by hand in order to highlight how you can utilise the service discovery.
 
 Products used:
 
@@ -43,11 +46,11 @@ Products used:
 
 ##### Build the VPC
 
-First we are going to need a VPC into which we'll deploy our Fargate Cluster. We are going to use cloudformation and deploy three public subnets and three private subnets, our fargate cluster will be in the private subnet and we'll use load balancers to make this publicly accessible.
+First we are going to need a VPC into which we'll deploy our Fargate Cluster. We are going to use CloudFormation and deploy three public subnets and three private subnets, our fargate cluster will be in the private subnet and we'll use load balancers to make this publicly accessible.
 
-In this git repository there is a folder called cloudformation. This contains our files for building our VPC.
+In this git repository there is a folder called CloudFormation. This contains our files for building our VPC.
 
-Open the AWS console in your browser and go to cloudformation. Press Create Stack.
+Open the AWS console in your browser and go to CloudFormation. Press Create Stack.
 
 ![New Stack](./img/newstack.png)
 
@@ -61,7 +64,7 @@ Wait for this to complete in the console.
 
 ##### Cluster creation
 
-We now need to create our fargate cluster name space. Note there are no running instances in EC2 but we still have a cluster in the ECS console. Our cloudformation stack is also going to create two load balancers, a public and a private ALB. In this demo we'll only use the public one.
+We now need to create our Fargate cluster namespace. Note there are no running instances in EC2 but we still have a cluster in the ECS console. Our CloudFormation stack is also going to create two load balancers, a public and a private ALB. In this demo we'll only use the public one.
 
 Press Create Stack again and upload the **_fargate-cluster.yml_** file. Once complete head over to the ECS console and you'll see your newly created cluster.
 
@@ -71,7 +74,7 @@ Remember our environment in this is called dev so update that variable as you go
 
 ### Create the Redis lead and service definition
 
-Lets now create a redis container in our fargate cluster. Open the cloudformation console and load the **_redis-lead.yml_** template.
+Lets now create a redis container in our fargate cluster. Open the CloudFormation console and load the **_redis-lead.yml_** template.
 
 Take a look in the ECS console and under Task Definitions you should now see defined a new task called redis-lead. Check the tick box and under actions choose **_Create Service_**.
 
@@ -121,7 +124,7 @@ Now the service is created, you can check out the status of the running containe
 
 ### Create the chat application
 
-Finally lets create the application. In cloudformation load the **_chat-service.yml_** template. This stack creates the TASK and the SERVICE this time so all you have to do make sure you select the right environment. We will create 3 copies of our chat application (TASK) and link it to the ALB. If you check out the code yaml you'll notice there is a section to give the ALB a nice public DNS name also.
+Finally lets create the application. In CloudFormation load the **_chat-service.yml_** template. This stack creates the TASK and the SERVICE this time so all you have to do make sure you select the right environment. We will create 3 copies of our chat application (TASK) and link it to the ALB. If you check out the code yaml you'll notice there is a section to give the ALB a nice public DNS name; you'll need to uncomment and update the section appropriately.
 
 **NOTE:** Give a few mins for the DNS to propagate before trying to browse to it.
 
@@ -140,9 +143,9 @@ In summary, you've now successfully built a Fargate cluster, loaded a task defin
 
 ### Clean up
 
-Most of this can be deleted by deleting the stack in the cloudformation console. However you'll need to manually pull down the service discovery component as we built this by hand.
+Most of this can be deleted by deleting the stack in the CloudFormation console. However you'll need to manually pull down the service discovery component as we built this by hand.
 
-First lets delete the service from in the ECS console. Find ther redis lead service in your cluster and select it then hit delete:
+First lets delete the service from in the ECS console. Find the redis lead service in your cluster and select it then hit delete:
 
 ![find the service](./img/delete-service.png)
 

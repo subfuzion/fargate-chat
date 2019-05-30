@@ -1,1 +1,2 @@
-If you'd like to make changes or fix this guide please forkt he project here on gitlab and submit a merge request.
+If you'd like to make changes or fix this guide please fork the project
+and submit a merge request.
