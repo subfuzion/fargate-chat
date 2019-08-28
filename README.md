@@ -44,11 +44,13 @@ Products used:
 
 ### Getting started
 
-##### Build the VPC
+##### 1. Build the VPC
 
 First we are going to need a VPC into which we'll deploy our Fargate Cluster. We are going to use CloudFormation and deploy three public subnets and three private subnets, our fargate cluster will be in the private subnet and we'll use load balancers to make this publicly accessible.
 
-In this git repository there is a folder called CloudFormation. This contains our files for building our VPC.
+In this git repository there is a folder called `cloudformation`. This contains our files for building our VPC.
+
+**Using the AWS console:**
 
 Open the AWS console in your browser and go to CloudFormation. Press Create Stack.
 
@@ -58,25 +60,35 @@ Select upload template to S3 and find the file named **_public-private-vpc.yml_*
 
 ![Template](./img/template.png)
 
-Answer a few questions such as stack name and set your Environment variable. This variable needs to be the same in the next two templates. In the demo that goes with this I use **_dev_** as the environment name and we need to use the same name in all other stacks.
+Answer a few questions. For **Stack name** use "chat-vpc" and for **EnvironmentName** use a common name that will be used when deploying the other templates as well, such as "chat". Accept default values for everything else.
 
 Wait for this to complete in the console.
 
-##### Cluster creation
+**Using the AWS CLI:***
 
-We now need to create our Fargate cluster namespace. Note there are no running instances in EC2 but we still have a cluster in the ECS console. Our CloudFormation stack is also going to create two load balancers, a public and a private ALB. In this demo we'll only use the public one.
+    $ aws cloudformation deploy --template-file ./cloudformation/public-private-vpc.yml --stack-name chat-vpc --parameter-overrides EnvironmentName=chat
 
-Press Create Stack again and upload the **_fargate-cluster.yml_** file. Once complete head over to the ECS console and you'll see your newly created cluster.
+##### 2. Create a Fargate Clusterj 
 
-Remember our environment in this is called dev so update that variable as you go along.
+We now need to create our Fargate cluster namespace. Note there are no running instances in EC2 but we still have a cluster in the ECS console. Our CloudFormation stack is also going to create a public application load balancer.
+
+Press Create Stack again and upload the **fargate-cluster.yml** file, or enter the following for the AWS CLI:
+
+    $ aws cloudformation deploy --template-file ./cloudformation/fargate-cluster.yml --stack-name chat-cluster --capabilities CAPABILITY_IAM --parameter-overrides EnvironmentName=chat
+
+For **Stack name** use "chat-cluster" and remember to use the same **EnvironmentName** value as before ("chat").
+
+Once complete head over to the ECS console and you'll see your newly created cluster.
 
 ![Stacks](./img/stacks.png)
 
-### Create the Redis lead and service definition
+### 3. Create the Redis lead task and service definition
 
-Lets now create a redis container in our fargate cluster. Open the CloudFormation console and load the **_redis-lead.yml_** template.
+Let's now create a redis container in our fargate cluster. Open the CloudFormation console and load the **redis-lead.yml** template. Or, using the AWS CLI:
 
-Take a look in the ECS console and under Task Definitions you should now see defined a new task called redis-lead. Check the tick box and under actions choose **_Create Service_**.
+    $ aws cloudformation deploy --template-file ./cloudformation/redis-lead.yml --stack-name chat-redis --parameter-overrides EnvironmentName=chat
+
+Look in the ECS console under Task Definitions and you should now see a new task called **redis-lead**. Check the tick box under actions and choose **Create Service**.
 
 ![Create Stack](./img/create-service.png)
 
@@ -89,14 +101,14 @@ Choose:
 - **Launch Type**: Fargate
 - **Number of Tasks**: 1
 
-The rest can remain default. The next section you'll be ask about is networking:
+The rest can remain default. The next section will ask you about networking configuration:
 
 ![Redis networking](./img/network-service.png)
 
 Make sure you select the following options:
 
-- **Cluster VPC**: dev-vpc (subnet should be 10.0.0.0/16)
-- **Subnets**: 10.0.3.0/24, 10.0.4.0/24, 10.0.5.0/24
+- **Cluster VPC**: chat-vpc (subnet should be 10.0.0.0/16)
+- **Subnets**: 10.0.3.0/24, 10.0.4.0/24
 
 and next we need to edit the security group:
 
@@ -124,7 +136,11 @@ Now the service is created, you can check out the status of the running containe
 
 ### Create the chat application
 
-Finally lets create the application. In CloudFormation load the **_chat-service.yml_** template. This stack creates the TASK and the SERVICE this time so all you have to do make sure you select the right environment. We will create 3 copies of our chat application (TASK) and link it to the ALB. If you check out the code yaml you'll notice there is a section to give the ALB a nice public DNS name; you'll need to uncomment and update the section appropriately.
+Finally lets create the application. In CloudFormation load the **chat-service.yml** template, or use the AWS CLI:
+
+    $ aws cloudformation deploy --template-file ./cloudformation/chat-service.yml --stack-name chat-service --parameter-overrides EnvironmentName=chat
+    
+This stack creates the task definition and service this time so all you have to do make sure you select the right environment. We will create 3 copies of our chat application (3 tasks) and link it to the public application load balancer (ALB). If you check out the template you'll notice there is a section to give the ALB a nice public DNS name; if you have a domain name you want to use, you'll need to uncomment and update the section appropriately.
 
 **NOTE:** Give a few mins for the DNS to propagate before trying to browse to it.
 

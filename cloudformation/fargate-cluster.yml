@@ -9,7 +9,7 @@ Description: This stack deploys a Fargate cluster that is in a VPC with both
 Parameters:
   EnvironmentName:
     Type: String
-    Default: production
+    Default: chat
     Description: A name for the environment that this cloudformation will be part of.
 Resources:
   # ECS Resources
@@ -85,7 +85,6 @@ Resources:
         # from the internet can reach the load balancer directly via the internet gateway
         - Fn::ImportValue: !Join [':', [!Ref 'EnvironmentName', 'PublicSubnetOne']]
         - Fn::ImportValue: !Join [':', [!Ref 'EnvironmentName', 'PublicSubnetTwo']]
-        - Fn::ImportValue: !Join [':', [!Ref 'EnvironmentName', 'PublicSubnetThree']]
       SecurityGroups: [!Ref 'PublicLoadBalancerSG']
   # A dummy target group is used to setup the ALB to just drop traffic
   # initially, before any real service target groups have been added.
@@ -143,7 +142,6 @@ Resources:
         # route for the public to even be able to access the private load balancer.
         - Fn::ImportValue: !Join [':', [!Ref 'EnvironmentName', 'PrivateSubnetOne']]
         - Fn::ImportValue: !Join [':', [!Ref 'EnvironmentName', 'PrivateSubnetTwo']]
-        - Fn::ImportValue: !Join [':', [!Ref 'EnvironmentName', 'PrivateSubnetThree']]
       SecurityGroups: [!Ref 'PrivateLoadBalancerSG']
   # This dummy target group is used to setup the ALB to just drop traffic
   # initially, before any real service target groups have been added.
@@ -265,10 +263,9 @@ Resources:
               - 'ecs:UpdateService'
             Resource: '*'
 
-
-# These are the values output by the CloudFormation template. Be careful
+# These are the Values output by the CloudFormation template. Be careful
 # about changing any of them, because of them are exported with specific
-# names so that the other task related CF templates can use them.
+# names so that the other dependent CloudFormation templates can use them.
 Outputs:
   ClusterName:
     Description: The name of the ECS cluster

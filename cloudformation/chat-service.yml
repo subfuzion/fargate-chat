@@ -3,7 +3,7 @@ Description: Socket.io chat service
 Parameters:
   EnvironmentName:
     Type: String
-    Default: production
+    Default: chat
     Description: A name for the environment that this cloudformation will be part of.
                  Used to locate other resources in the same environment.
   ServiceName:
@@ -12,7 +12,7 @@ Parameters:
     Description: Service name
   ImageUrl:
     Type: String
-    Default: richarvey/fargate-chat-demo:latest
+    Default: subfuzion/fargate-chat:latest
     Description: The url of a docker image that contains the application process that
                  will handle the traffic for this service
   ContainerPort:
@@ -120,8 +120,6 @@ Resources:
                 !Join [':', [!Ref 'EnvironmentName', 'PrivateSubnetOne']]
             - Fn::ImportValue:
                 !Join [':', [!Ref 'EnvironmentName', 'PrivateSubnetTwo']]
-            - Fn::ImportValue:
-                !Join [':', [!Ref 'EnvironmentName', 'PrivateSubnetThree']]
       TaskDefinition: !Ref 'TaskDefinition'
       Role:
         Fn::If:

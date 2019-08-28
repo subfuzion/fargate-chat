@@ -3,7 +3,7 @@ Description: Redis Lead
 Parameters:
   EnvironmentName:
     Type: String
-    Default: production
+    Default: chat
     Description: A name for the environment that this cloudformation will be part of.
                  Used to locate other resources in the same environment.
   ServiceName:
@@ -86,4 +86,3 @@ Resources:
               awslogs-group: !Join ['-', [!Ref 'EnvironmentName', 'service', !Ref 'ServiceName']]
               awslogs-region: !Ref 'AWS::Region'
               awslogs-stream-prefix: !Ref 'ServiceName'
-
